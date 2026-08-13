@@ -7,17 +7,6 @@ authors = [
     { name = "ThomasHjorgensen", email = "tjo@econ.ku.dk" }
 ]
 requires-python = ">=3.13"
-dependencies = [
-    "econmodel",
-    "ipykernel>=7.3.0",
-    "matplotlib>=3.11.1",
-    "numpy>=2.5.1",
-    "pandas>=3.0.5",
-    "scipy>=1.18.0",
-]
-
-[tool.uv.sources]
-econmodel = { git = "https://github.com/NumEconCopenhagen/EconModel", rev = "367f22048e49cad10cc54c3f09f5f313180cca6f" }
 
 [project.scripts]
 chorms = "chorms:main"
