@@ -1,12 +1,12 @@
 [project]
 name = "chorms"
-version = "0.1.1"
-description = "Add your description here"
+version = "0.1.2"
+description = "Model on household norms and chores"
 readme = "README.md"
 authors = [
     { name = "ThomasHjorgensen", email = "tjo@econ.ku.dk" }
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.7"
 
 [project.scripts]
 chorms = "chorms:main"
