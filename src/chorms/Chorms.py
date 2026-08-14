@@ -181,13 +181,20 @@ class ChormsClass(EconModelClass):
         sim.home_share_exp_w = np.nan + np.zeros(shape)
 
 
-    def load_data(self,do_simulate=False):
-        '''This function loads data and stores it in 'sim' '''
+    def load_data(self,data=None,do_simulate=False):
+        '''This function loads data and stores it in 'sim'
+
+        Args:
+            data (pandas.DataFrame,optional): real data. Column names must match sim variable
+                names (see .sim namespace). Not all sim variables need be present (missing ones
+                are left at their placeholder values).
+            do_simulate (bool,optional): if True, simulate data instead of using `data`
+        '''
         # unpack
         par = self.par
         sim = self.sim
         sol = self.sol
-        
+
         if do_simulate:
 
             # construct coavriance matrix for wages in order to sample from bivariate normal distribution.
@@ -240,8 +247,31 @@ class ChormsClass(EconModelClass):
                 # reset to nan in sol
                 setattr(sol,var,np.nan+np.ones(sol.labor_w.shape))
         
+        elif (data is not None):
+
+            # a. resize sol/sim to match the data and reset sol to placeholders
+            par.num_N = len(data)
+            self.allocate()
+
+            # b. compare data columns to sim variable names
+            expected_vars = set(vars(sim).keys())
+            data_vars = set(data.columns)
+
+            unmatched_columns = data_vars - expected_vars
+            if unmatched_columns:
+                print(f'load_data warning: columns {sorted(unmatched_columns)} do not correspond to any sim variable and will be ignored')
+
+            missing_vars = expected_vars - data_vars
+            if missing_vars:
+                print(f'load_data warning: sim variables {sorted(missing_vars)} were not found in data and remain at their placeholder values')
+
+            # c. copy over matched variables, casting to the dtype allocate() assigned
+            for var in expected_vars & data_vars:
+                target_dtype = getattr(sim,var).dtype
+                setattr(sim,var,np.asarray(data[var].values,dtype=target_dtype))
+
         else:
-            pass# TODO: load actual wage data 
+            print('load_data: nothing to do, pass do_simulate=True or data=<DataFrame>')
 
     ############
     # Solution #
