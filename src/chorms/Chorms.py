@@ -664,4 +664,4 @@ def standard_errors(theta,theta_names,model,data_outcomes=None,weight=None,var_l
     var_cov_theta = np.linalg.solve(A, A_inv_B.T).T / N
     
     se_theta = np.sqrt(np.diag(var_cov_theta))
-    return se_theta    
+    return se_theta
