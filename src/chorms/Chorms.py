@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 from EconModel import EconModelClass
 from numpy.polynomial.hermite import hermgauss
 
@@ -32,7 +31,7 @@ class ChormsClass(EconModelClass):
         par.home_effective_w = 1.0 # effective home production input depends on flexibility at work
         par.home_effective_m = 1.0
 
-        par.home_weight = 1.0 # absolute advantage of women in home production (0.5 is equal)
+        par.home_weight = 1.0 # absolute advantage of women in home production (1.0 is equal)
         par.home_power = 0.4 # complementarity between men and women's input into home production
 
         par.public_weight = 0.6 # weight on market purchased goods in public good production
@@ -168,7 +167,7 @@ class ChormsClass(EconModelClass):
         sim.norm_alt_w = np.nan + np.zeros(shape)
         sim.norm_alt_m = np.nan + np.zeros(shape)
         
-        sim.nkids = np.zeros(shape,dtype=int) # placeholder, to be replaced by actual data loading
+        sim.nkids = np.zeros(shape,dtype=np.int64) # placeholder, to be replaced by actual data loading
         
         # choice variables
         sim.labor_w = np.nan + np.zeros(shape)
@@ -438,7 +437,7 @@ def numerical_derivative_loglik_vec(theta, theta_names, model, eps=1e-5):
 
     return score
 
-def hessian(theta, theta_names, model, eps=1e-5):
+def hessian(theta, theta_names, model, eps=1e-3):
     """
     Calculate the Hessian of the log-likelihood.
 
@@ -451,7 +450,11 @@ def hessian(theta, theta_names, model, eps=1e-5):
     model : object
         Model object.
     eps : float
-        Step size for numerical differentiation.
+        Step size for the outer (Hessian) finite difference. Deliberately
+        larger than numerical_derivative_loglik_vec's own (inner) step size,
+        since the score itself is only known up to numerical/optimizer noise:
+        an outer step of the same size would make the double-differenced
+        Hessian dominated by that noise rather than the true curvature.
 
     Returns
     -------

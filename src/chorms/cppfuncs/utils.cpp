@@ -23,7 +23,7 @@ namespace utils {
             norm_attract = par->norm_attract_m;
         }
 
-        if(abs(norm_diff) < norm_attract){
+        if(std::abs(norm_diff) < norm_close){
             return norm_attract;
 
         } else if (norm_diff > 0.0){

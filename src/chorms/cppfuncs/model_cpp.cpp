@@ -167,12 +167,18 @@ EXPORT void LogLik(double* LogLik_vec, sol_struct *sol,sim_struct *sim, par_stru
     } // pragma
     
     // store estimated variances (std) [NOTE: order important! must follow the var_list order above]
-    par->meas_sigma_vec[0] = std::sqrt(sum1/numN11);
-    par->meas_sigma_vec[1] = std::sqrt(sum2/numN11);
-    par->meas_sigma_vec[2] = std::sqrt(sum3/numN11);
-    par->meas_sigma_vec[3] = std::sqrt(sum4/numN11);
-    par->meas_sigma_vec[4] = std::sqrt(sum5/numN11);
-    par->meas_sigma_vec[5] = std::sqrt(sum6/numN11);
+    if(numN11 > 0){
+        par->meas_sigma_vec[0] = std::sqrt(sum1/numN11);
+        par->meas_sigma_vec[1] = std::sqrt(sum2/numN11);
+        par->meas_sigma_vec[2] = std::sqrt(sum3/numN11);
+        par->meas_sigma_vec[3] = std::sqrt(sum4/numN11);
+        par->meas_sigma_vec[4] = std::sqrt(sum5/numN11);
+        par->meas_sigma_vec[5] = std::sqrt(sum6/numN11);
+    } else {
+        for(int m = 0; m < num_var; m++){
+            par->meas_sigma_vec[m] = NAN;
+        }
+    }
 
     // Now, solve the model for all couples and compute the likelihood contribution for each observation. This is done in parallel across observations.
     #pragma omp parallel num_threads(par->cpp_threads) shared(sol,sim,par)
