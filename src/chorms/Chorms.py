@@ -1,5 +1,5 @@
 import numpy as np
-from EconModel import EconModelClass
+from LocalEconModel import EconModelClass
 from numpy.polynomial.hermite import hermgauss
 
 class ChormsClass(EconModelClass):
